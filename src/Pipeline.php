@@ -124,27 +124,19 @@ final class Pipeline
             $photoPath = $temporaryJpeg;
         }
 
-        if (filesize($photoPath) !== false && filesize($photoPath) <= 10485760) {
-            $photo = fopen($photoPath, 'rb');
-            if ($photo !== false) {
-                $bot->sendPhoto(
-                    photo: InputFile::make($photo, 'edited.jpg'),
-                    caption: $label,
-                );
-                fclose($photo);
-            }
-        }
-
-        $document = fopen($path, 'rb');
-        if ($document === false) {
-            throw new RuntimeException('Could not read the edited image.');
+        $photoSize = filesize($photoPath);
+        if ($photoSize !== false && $photoSize <= 10485760) {
+            $photoName = $temporaryJpeg !== null ? 'edited.jpg' : 'edited.'.($extension === 'jpeg' ? 'jpg' : $extension);
+            $bot->sendPhoto(
+                photo: InputFile::make($photoPath, $photoName),
+                caption: $label,
+            );
         }
 
         $bot->sendDocument(
-            document: InputFile::make($document, 'edited.'.$extension),
+            document: InputFile::make($path, 'edited.'.$extension),
             caption: $label.' file',
         );
-        fclose($document);
 
         if ($temporaryJpeg !== null && is_file($temporaryJpeg)) {
             unlink($temporaryJpeg);
