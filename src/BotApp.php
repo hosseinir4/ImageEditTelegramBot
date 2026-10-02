@@ -27,9 +27,9 @@ final class BotApp
 
         $bot->onCommand('start', function (Nutgram $bot): void {
             $bot->sendMessage(
-                "Send a photo or an image file.\n".
+                "Send the image as a file to keep its quality. A photo is already compressed by Telegram.\n".
                 "Supported: JPEG, PNG, GIF, WebP, BMP.\n".
-                "Then pick an edit. I will send the result as a photo and as a file.\n".
+                "Then pick an edit. I send the result as a file, so it stays full quality.\n".
                 'Edits stack. Reset original goes back to the file you sent.'
             );
         });

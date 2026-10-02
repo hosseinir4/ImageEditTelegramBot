@@ -1,6 +1,6 @@
 # ImageBot
 
-Telegram bot for editing images. Users send a photo or an image file, pick an edit from an inline keyboard, and get the result back as a photo and as a file.
+Telegram bot for editing images. Users send an image file, pick an edit from an inline keyboard, and get the result back as a full-quality file.
 
 Built with [Nutgram](https://github.com/nutgram/nutgram) and [Intervention Image](https://github.com/intervention/image) (GD).
 
@@ -44,6 +44,6 @@ php poll.php
 1. Send `/start`, then a photo or an image file.
 2. Pick a menu: Size, Crop, Effects, Colors, Flip & rotate, or Text.
 3. Buttons that need a size or text ask you to send the values. Example: `800 600`. Send `/cancel` to stop.
-4. The bot sends the edited image as a photo and as a file.
+4. The bot sends the edited image as a PNG file. Telegram compresses photos, so the result is a file.
 
 Edits stack on the latest result. **Reset original** goes back to the file you sent.

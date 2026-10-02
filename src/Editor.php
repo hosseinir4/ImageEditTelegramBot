@@ -38,13 +38,6 @@ final class Editor
         $encoded->save($destination);
     }
 
-    public function jpegCopy(string $source, string $destination): void
-    {
-        $this->manager->decodePath($source)
-            ->encodeUsingFormat(Format::JPEG, quality: 90)
-            ->save($destination);
-    }
-
     /**
      * @param  array<int, string>  $args
      */

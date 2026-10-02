@@ -60,7 +60,7 @@ final class Pipeline
      */
     public static function edit(Nutgram $bot, string $operation, array $args = []): void
     {
-        $bot->sendChatAction(ChatAction::UPLOAD_PHOTO);
+        $bot->sendChatAction(ChatAction::UPLOAD_DOCUMENT);
 
         if ($operation === 'reset') {
             $original = $bot->getUserData('original');
@@ -82,12 +82,7 @@ final class Pipeline
             throw new RuntimeException('Send an image first.');
         }
 
-        $extension = strtolower(pathinfo($current, PATHINFO_EXTENSION));
-        if (!in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'], true)) {
-            $extension = 'png';
-        }
-
-        $destination = self::imageDirectory().'/'.$bot->userId().'-'.time().'.'.$extension;
+        $destination = self::imageDirectory().'/'.$bot->userId().'-'.time().'.png';
         (new Editor())->apply($current, $destination, $operation, $args);
 
         $original = $bot->getUserData('original');
@@ -114,33 +109,15 @@ final class Pipeline
 
     private static function deliver(Nutgram $bot, string $path, string $label): void
     {
-        $photoPath = $path;
-        $temporaryJpeg = null;
         $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
-
-        if (!in_array($extension, ['jpg', 'jpeg', 'png'], true)) {
-            $temporaryJpeg = self::imageDirectory().'/'.$bot->userId().'-preview.jpg';
-            (new Editor())->jpegCopy($path, $temporaryJpeg);
-            $photoPath = $temporaryJpeg;
-        }
-
-        $photoSize = filesize($photoPath);
-        if ($photoSize !== false && $photoSize <= 10485760) {
-            $photoName = $temporaryJpeg !== null ? 'edited.jpg' : 'edited.'.($extension === 'jpeg' ? 'jpg' : $extension);
-            $bot->sendPhoto(
-                photo: InputFile::make($photoPath, $photoName),
-                caption: $label,
-            );
+        if ($extension === '' || $extension === 'jpeg') {
+            $extension = $extension === 'jpeg' ? 'jpg' : 'png';
         }
 
         $bot->sendDocument(
             document: InputFile::make($path, 'edited.'.$extension),
-            caption: $label.' file',
+            caption: $label.'. Full quality file.',
         );
-
-        if ($temporaryJpeg !== null && is_file($temporaryJpeg)) {
-            unlink($temporaryJpeg);
-        }
 
         $bot->sendMessage('Edit again, or send a new image.', reply_markup: Keyboards::for('home'));
     }
