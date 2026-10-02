@@ -30,7 +30,8 @@ final class BotApp
                 "Send the image as a file to keep its quality. A photo is already compressed by Telegram.\n".
                 "Supported: JPEG, PNG, GIF, WebP, BMP.\n".
                 "Then pick an edit. I send the result as a file, so it stays full quality.\n".
-                'Edits stack. Reset original goes back to the file you sent.'
+                "Edits stack. Reset original goes back to the file you sent.\n".
+                'After 10 edits, join the channel to continue.'
             );
         });
 

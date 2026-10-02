@@ -60,6 +60,16 @@ final class Pipeline
      */
     public static function edit(Nutgram $bot, string $operation, array $args = []): void
     {
+        $userId = $bot->userId();
+
+        if ($userId === null) {
+            throw new RuntimeException('Send an image first.');
+        }
+
+        if (!Usage::allows($bot, $userId)) {
+            return;
+        }
+
         $bot->sendChatAction(ChatAction::UPLOAD_DOCUMENT);
 
         if ($operation === 'reset') {
@@ -94,6 +104,8 @@ final class Pipeline
 
         $bot->setUserData('current', $destination);
         self::deliver($bot, $destination, self::label($operation));
+        Usage::increment($userId);
+        Usage::remindAfterLimit($bot, $userId);
     }
 
     public static function showMenu(Nutgram $bot, string $menu): void
